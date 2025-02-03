@@ -59,14 +59,14 @@ def is_safe_row_diag(board, row, col) -> bool:
         if board[row][i] == 1:
             return False
 
-    # Check upper diagonal on the left side
+    
     for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
+        if 0 <= i < len(board) and 0 <= j < len(board) and board[i][j] == 1:
             return False
 
-    # Check lower diagonal on the left side
+    
     for i, j in zip(range(row, len(board)), range(col, -1, -1)):
-        if board[i][j] == 1:
+        if 0 <= i < len(board) and 0 <= j < len(board) and board[i][j] == 1:
             return False
 
     return True
@@ -87,11 +87,10 @@ def solve_8_queens(board: List[List[int]], col: int) -> bool:
         bool: whether the solution exists
     """
     # TODO
-    if col >= BOARD_SIZE:
+    if col >= len(board):
         return True
 
-    # Try placing a queen in all rows one by one
-    for row in range(BOARD_SIZE):
+    for row in range(len(board)):
         if is_safe_row_diag(board, row, col):
             # Place the queen
             board[row][col] = 1
