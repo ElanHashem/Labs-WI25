@@ -23,7 +23,9 @@ class Node:
             end (Node): the end node
         """
         # TODO your code here
-        ...
+        self.children.append(end)
+        end.parents.append(self)
+        
 
     def add_undirected_edge(self, end: "Node"):
         """
@@ -35,7 +37,10 @@ class Node:
             end (Node): the end node
         """
         # TODO your code here
-        ...
+        self.children.append(end)
+        self.parents.append(end)
+        end.children.append(self)
+        end.parents.append(self)
 
     def __repr__(self):
         """String representation of the node"""
@@ -85,8 +90,15 @@ class Graph:
             directed (bool): whether the edge is directed or not, default is True
         """
         # TODO your code here
-        ...
-
+        if start not in self.nodes:
+            self.nodes.add(start)
+        if end not in self.nodes:
+            self.nodes.add(end)
+        
+        if directed:
+            start.add_directed_edge(end)
+        else:
+            start.add_undirected_edge(end)
 
 class Tree(Graph):
     """
@@ -102,6 +114,9 @@ class Tree(Graph):
         super().__init__(root)
         self.root = root
 
+    
+     
+    
     def validate_tree(self) -> bool:
         """
         Validates if the current tree is a valid tree. Use the following rules:
@@ -110,10 +125,27 @@ class Tree(Graph):
 
         Returns: (bool) whether the tree is valid or not
         """
+        def validate_tree_rec(self, node: Node, visited):
+            visited.append(node)
+            if node.children.count == 0:
+                return True
+            else:
+                for child in node.children:
+                    if child in visited:
+                        return False
+                    elif not validate_tree_rec(self,child, visited):
+                        return False
+            return True
+        
+        
         # TODO your code here
-        ...
-
-
+        if self.root == None:
+            return false
+        vistited = []
+        current = self.root
+        return validate_tree_rec(self, current, vistited)
+                
+    
 class BinaryTreeNode(Node):
     """Node that has at most two children, left and right"""
 
@@ -154,7 +186,21 @@ class BinarySearchTree(Tree):
             return
         current = self.root
         # TODO your code here
-        ...
+        looking = True
+        while looking:
+            if node.value < current.value:
+                if current.left is None:
+                    current.add_left_child(node)
+                    looking = False
+                else:
+                    current = current.left
+            else:
+                if current.right is None:
+                    current.add_right_child(node)
+                    looking = False
+                else:
+                    current = current.right
+                    
 
     def validate_bst(self) -> bool:
         """
@@ -168,4 +214,14 @@ class BinarySearchTree(Tree):
             - The right child of a node must be greater than the parent node
         """
         # TODO your code here
-        ...
+        def validate(node, min_val, max_val):
+            if not node:
+                return True
+            
+            if (min_val is not None and node.value <= min_val) or (max_val is not None and node.value >= max_val):
+                return False
+            
+            return (validate(node.left, min_val, node.value) and 
+                    validate(node.right, node.value, max_val))
+
+        return validate(self.root, None, None)
